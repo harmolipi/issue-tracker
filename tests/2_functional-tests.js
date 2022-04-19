@@ -199,11 +199,7 @@ suite('Functional Tests', function() {
             const res = await chai.request(server).put('/api/issues/apitest').send({
                 issue_title: 'Title',
                 issue_text: 'text',
-                created_by: 'Functional Test - Required fields',
-                assigned_to: 'Chai and Mocha',
-                status_text: 'In QA',
             });
-            assert.equal(res.status, 400);
             assert.equal(res.body.error, 'missing _id');
         });
 

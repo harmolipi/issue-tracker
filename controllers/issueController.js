@@ -61,7 +61,7 @@ exports.issue_update_put = (req, res, next) => {
     });
 
     if (!query._id) {
-        res.status(400).json({ error: 'missing _id' });
+        res.json({ error: 'missing _id' });
         return;
     } else if (Object.keys(query).length === 1) {
         res.json({ error: 'no update field(s) sent', _id: query._id });
