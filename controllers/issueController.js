@@ -62,15 +62,19 @@ exports.issue_update_put = (req, res, next) => {
 
     if (!query._id) {
         res.status(400).json({ error: 'missing _id' });
+        return;
     } else if (Object.keys(query).length === 1) {
         res.json({ error: 'no update field(s) sent', _id: query._id });
+        return;
     }
 
     Issue.findByIdAndUpdate(query._id, query, { new: true }, (err, issue) => {
         if (err) {
-            res.json({ error: 'could not update', _id: query._id });
+            res.status(400).json({ error: 'could not update', _id: query._id });
+            return;
         }
         res.json({ result: 'successfully updated', _id: query._id });
+        return;
     });
 };
 

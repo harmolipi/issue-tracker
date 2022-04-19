@@ -212,7 +212,6 @@ suite('Functional Tests', function() {
                 _id: id3,
             });
 
-            assert.equal(res.status, 400);
             assert.equal(res.body.error, 'no update field(s) sent');
             assert.equal(res.body._id, id3);
         });
@@ -227,7 +226,8 @@ suite('Functional Tests', function() {
                 status_text: 'In QA',
             });
             assert.equal(res.status, 400);
-            assert.equal(res.body.error, '_id error');
+            assert.equal(res.body.error, 'could not update');
+            assert.equal(res.body._id, '123');
         });
     });
 
