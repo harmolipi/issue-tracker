@@ -68,12 +68,11 @@ exports.issue_update_put = (req, res, next) => {
     Issue.findByIdAndUpdate(
         query._id, {...query, updated_on: new Date() }, { new: true },
         (err, issue) => {
-            if (err) {
-                res.status(400).json({ error: 'could not update', _id: query._id });
-                return;
-            } else if (Object.keys(query).length === 1) {
-                console.log('no fields to update', query);
+            if (Object.keys(query).length === 1) {
                 res.json({ error: 'no update field(s) sent', _id: query._id });
+                return;
+            } else if (err || !issue) {
+                res.status(400).json({ error: 'could not update', _id: query._id });
                 return;
             }
             res.json({ result: 'successfully updated', _id: issue._id });
