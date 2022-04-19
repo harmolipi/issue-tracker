@@ -52,22 +52,26 @@ exports.issue_view_get = (req, res, project, next) => {
 };
 
 exports.issue_update_put = (req, res, next) => {
-    if (!req.body._id) {
+    const query = {...req.body };
+
+    Object.keys(query).forEach((attribute) => {
+        if (query[attribute] === '') {
+            delete query[attribute];
+        }
+    });
+
+    if (!query._id) {
         res.status(400).json({ error: 'missing _id' });
-    } else if (Object.keys(req.query).length === 0) {
-        res.json({ error: 'no update field(s) sent', _id: req.body._id });
+    } else if (Object.keys(query).length === 1) {
+        res.json({ error: 'no update field(s) sent', _id: query._id });
     }
 
-    Issue.findByIdAndUpdate(
-        req.body._id,
-        req.body, { new: true },
-        (err, issue) => {
-            if (err) {
-                res.json({ error: 'could not update', _id: req.body._id });
-            }
-            res.json({ result: 'successfully updated', _id: issue._id });
+    Issue.findByIdAndUpdate(query._id, query, { new: true }, (err, issue) => {
+        if (err) {
+            res.json({ error: 'could not update', _id: query._id });
         }
-    );
+        res.json({ result: 'successfully updated', _id: query._id });
+    });
 };
 
 exports.issue_delete = (req, res, next) => {
