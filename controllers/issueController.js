@@ -52,7 +52,22 @@ exports.issue_view_get = (req, res, project, next) => {
 };
 
 exports.issue_update_put = (req, res, next) => {
-    res.send('NOT IMPLEMENTED: Issue update PUT');
+    if (!req.body._id) {
+        res.status(400).json({ error: 'missing _id' });
+    } else if (Object.keys(req.query).length === 0) {
+        res.json({ error: 'no update field(s) sent', _id: req.body._id });
+    }
+
+    Issue.findByIdAndUpdate(
+        req.body._id,
+        req.body, { new: true },
+        (err, issue) => {
+            if (err) {
+                res.json({ error: 'could not update', _id: req.body._id });
+            }
+            res.json({ result: 'successfully updated', _id: issue._id });
+        }
+    );
 };
 
 exports.issue_delete = (req, res, next) => {
