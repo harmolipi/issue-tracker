@@ -3,10 +3,57 @@ const chai = require('chai');
 const assert = chai.assert;
 const server = require('../server');
 const { suite, test } = require('mocha');
+const Issue = require('../models/issue');
 
 chai.use(chaiHttp);
 
 suite('Functional Tests', function() {
+    let id1;
+    let id2;
+    let id3;
+
+    this.beforeEach(async() => {
+        await Issue.deleteMany({});
+
+        const test1 = new Issue({
+            issue_title: 'test1 title',
+            issue_text: 'test1 text',
+            created_by: 'test1 user',
+            assigned_to: 'test1 assignee',
+            status_text: 'test1 status',
+            project: 'apitest',
+            open: true,
+        });
+
+        const test2 = new Issue({
+            issue_title: 'test2 title',
+            issue_text: 'test2 text',
+            created_by: 'test2 user',
+            assigned_to: 'test2 assignee',
+            status_text: 'test2 status',
+            project: 'apitest',
+            open: true,
+        });
+
+        const test3 = new Issue({
+            issue_title: 'test3 title',
+            issue_text: 'test3 text',
+            created_by: 'test3 user',
+            assigned_to: 'test3 assignee',
+            status_text: 'test3 status',
+            project: 'apitest',
+            open: false,
+        });
+
+        const saved1 = await test1.save();
+        const saved2 = await test2.save();
+        const saved3 = await test3.save();
+
+        id1 = saved1._id;
+        id2 = saved2._id;
+        id3 = saved3._id;
+    });
+
     suite('Create issues', () => {
         test('Create issue with every field: POST request to /api/issues/{project}', (done) => {
             chai
@@ -74,7 +121,6 @@ suite('Functional Tests', function() {
                 .request(server)
                 .get('/api/issues/apitest')
                 .end((err, res) => {
-                    assert.equal(res.status, 200);
                     assert.isArray(res.body);
                     assert.property(res.body[0], 'issue_title');
                     assert.property(res.body[0], 'issue_text');
@@ -94,7 +140,6 @@ suite('Functional Tests', function() {
                 .request(server)
                 .get('/api/issues/apitest?open=true')
                 .end((err, res) => {
-                    assert.equal(res.status, 200);
                     assert.isArray(res.body);
                     assert.property(res.body[0], 'issue_title');
                     assert.property(res.body[0], 'issue_text');
@@ -105,6 +150,11 @@ suite('Functional Tests', function() {
                     assert.property(res.body[0], 'open');
                     assert.property(res.body[0], 'status_text');
                     assert.property(res.body[0], '_id');
+                    assert.equal(res.body[0].open, true);
+                    assert.equal(
+                        res.body.length,
+                        res.body.filter((issue) => issue.open).length
+                    );
                     done();
                 });
         });
@@ -112,7 +162,7 @@ suite('Functional Tests', function() {
         test('View issues on a project with multiple filters: GET request to /api/issues/{project}', (done) => {
             chai
                 .request(server)
-                .get('/api/issues/apitest?open=true&assigned_to=Chai and Mocha')
+                .get('/api/issues/apitest?open=true&assigned_to=test1 assignee')
                 .end((err, res) => {
                     assert.equal(res.status, 200);
                     assert.isArray(res.body);
@@ -125,6 +175,13 @@ suite('Functional Tests', function() {
                     assert.property(res.body[0], 'open');
                     assert.property(res.body[0], 'status_text');
                     assert.property(res.body[0], '_id');
+                    assert.equal(res.body[0].open, true);
+                    assert.equal(
+                        res.body.length,
+                        res.body.filter(
+                            (issue) => issue.open && issue.assigned_to === 'test1 assignee'
+                        ).length
+                    );
                     done();
                 });
         });
