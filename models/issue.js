@@ -30,6 +30,10 @@ const IssueSchema = new Schema({
         type: Date,
         default: Date.now,
     },
+    open: {
+        type: Boolean,
+        default: true,
+    },
     project: {
         type: String,
         required: true,
