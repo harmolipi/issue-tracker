@@ -248,7 +248,7 @@ suite('Functional Tests', function() {
                     _id: '123',
                 });
             assert.equal(res.body.error, 'could not delete');
-            assert.equal(res.body['_id'], '123');
+            assert.equal(res.body._id, '123');
         });
 
         test('Delete an issue with missing _id: DELETE request to /api/issues/{project}', async() => {
@@ -256,7 +256,6 @@ suite('Functional Tests', function() {
                 .request(server)
                 .delete('/api/issues/apitest')
                 .send({});
-            assert.equal(res.status, 400);
             assert.equal(res.body.error, 'missing _id');
         });
     });
