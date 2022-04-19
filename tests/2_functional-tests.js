@@ -237,11 +237,11 @@ suite('Functional Tests', function() {
                 .request(server)
                 .delete('/api/issues/apitest')
                 .send({
-                    _id: '5e9f9c8f9c8f9c8f9c8f9c8f',
+                    _id: id1,
                 });
             assert.equal(res.status, 200);
             assert.equal(res.body.result, 'successfully deleted');
-            assert.equal(res.body['_id'], '5e9f9c8f9c8f9c8f9c8f9c8f');
+            assert.equal(res.body._id, id1);
         });
 
         test('Delete an issue with an invalid _id: DELETE request to /api/issues/{project}', async() => {
@@ -249,11 +249,10 @@ suite('Functional Tests', function() {
                 .request(server)
                 .delete('/api/issues/apitest')
                 .send({
-                    _id: '5e9f9c8f9c8f9c8f9c8f9c8f',
+                    _id: '123',
                 });
-            assert.equal(res.status, 400);
             assert.equal(res.body.error, 'could not delete');
-            assert.equal(res.body['_id'], '5e9f9c8f9c8f9c8f9c8f9c8f');
+            assert.equal(res.body['_id'], '123');
         });
 
         test('Delete an issue with missing _id: DELETE request to /api/issues/{project}', async() => {
@@ -262,8 +261,7 @@ suite('Functional Tests', function() {
                 .delete('/api/issues/apitest')
                 .send({});
             assert.equal(res.status, 400);
-            assert.equal(res.body.error, '_id error');
-            assert.equal(res.body['_id'], '');
+            assert.equal(res.body.error, 'missing _id');
         });
     });
 });
