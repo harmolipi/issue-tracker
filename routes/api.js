@@ -18,9 +18,11 @@ module.exports = function(app) {
 
     .put(function(req, res) {
         const project = req.params.project;
+        issue_controller.issue_update_put(req, res, project);
     })
 
     .delete(function(req, res) {
         const project = req.params.project;
+        issue_controller.issue_delete(req, res, project);
     });
 };
