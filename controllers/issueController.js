@@ -13,13 +13,32 @@ exports.issue_create_post = (req, res, project, next) => {
 
     issue.save((err, issue) => {
         if (err) {
-            const error =
-                err.errors.issue_title.kind === 'required' ||
-                err.errors.issue_text.kind === 'required' ||
-                err.errors.created_by.kind === 'required' ?
-                'required field(s) missing' :
-                err;
-            res.status(500).json({ error: error });
+            let error;
+            let status = 500;
+            if (
+                err.errors &&
+                err.errors.issue_title &&
+                err.errors.issue_title.kind === 'required'
+            ) {
+                error = 'required field(s) missing';
+                status = 400;
+            } else if (
+                err.errors &&
+                err.errors.issue_text &&
+                err.errors.issue_text.kind === 'required'
+            ) {
+                error = 'required field(s) missing';
+                status = 400;
+            } else if (
+                err.errors &&
+                err.errors.created_by &&
+                err.errors.created_by.kind === 'required'
+            ) {
+                error = 'required field(s) missing';
+                status = 400;
+            }
+
+            res.status(status).json({ error: error });
         }
         res.status(201).json(issue);
     });
