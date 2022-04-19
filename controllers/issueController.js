@@ -52,27 +52,48 @@ exports.issue_view_get = (req, res, project, next) => {
 };
 
 exports.issue_update_put = (req, res, next) => {
-    const query = {...req.body };
+    // const query = {...req.body };
+    const { _id, ...update } = req.body;
 
-    Object.keys(query).forEach((attribute) => {
-        if (query[attribute] === '') {
-            delete query[attribute];
-        }
-    });
+    // Object.keys(update).forEach((attribute) => {
+    //     if (update[attribute] === '') {
+    //         delete update[attribute];
+    //     }
+    // });
 
-    if (!query._id) {
+    if (!_id) {
         res.json({ error: 'missing _id' });
         return;
     }
 
+    const fields = [
+        'issue_title',
+        'issue_text',
+        'created_by',
+        'assigned_to',
+        'open',
+        'status_text',
+    ];
+    let containsFields = 0;
+    fields.forEach((field) => {
+        if (update[field] !== undefined) {
+            containsFields = 1;
+            return;
+        }
+    });
+    if (containsFields === 0) {
+        res.json({ error: 'no update field(s) sent', _id });
+        return;
+    }
+
     Issue.findByIdAndUpdate(
-        query._id, {...query, updated_on: new Date() }, { new: true },
+        _id, {...update, updated_on: new Date() }, { new: true },
         (err, issue) => {
-            if (Object.keys(query).length === 1) {
-                res.json({ error: 'no update field(s) sent', _id: query._id });
-                return;
-            } else if (err || !issue) {
-                res.status(400).json({ error: 'could not update', _id: query._id });
+            // if (Object.keys(query).length === 1) {
+            // res.json({ error: 'no update field(s) sent', _id: query._id });
+            // return;
+            if (err || !issue) {
+                res.json({ error: 'could not update', _id: _id });
                 return;
             }
             res.json({ result: 'successfully updated', _id: issue._id });
