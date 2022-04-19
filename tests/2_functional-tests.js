@@ -221,7 +221,6 @@ suite('Functional Tests', function() {
                 assigned_to: 'Chai and Mocha',
                 status_text: 'In QA',
             });
-            assert.equal(res.status, 400);
             assert.equal(res.body.error, 'could not update');
             assert.equal(res.body._id, '123');
         });
