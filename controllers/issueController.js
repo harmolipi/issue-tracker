@@ -68,15 +68,17 @@ exports.issue_update_put = (req, res, next) => {
         return;
     }
 
-    Issue.findByIdAndUpdate(query._id, query, { new: true }, (err, issue) => {
-        if (err) {
-            res.status(400).json({ error: 'could not update', _id: query._id });
+    Issue.findByIdAndUpdate(
+        query._id, {...query, updated_on: new Date() }, { new: true },
+        (err, issue) => {
+            if (err) {
+                res.status(400).json({ error: 'could not update', _id: query._id });
+                return;
+            }
+            res.json({ result: 'successfully updated', _id: issue._id });
             return;
         }
-        issue.updated_on = new Date();
-        res.json({ result: 'successfully updated', _id: issue._id });
-        return;
-    });
+    );
 };
 
 exports.issue_delete = (req, res, next) => {
