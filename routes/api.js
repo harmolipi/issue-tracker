@@ -8,6 +8,7 @@ module.exports = function(app) {
 
     .get(function(req, res) {
         const project = req.params.project;
+        issue_controller.issue_view_get(req, res, project);
     })
 
     .post(function(req, res) {

@@ -42,8 +42,13 @@ exports.issue_create_post = (req, res, project, next) => {
     });
 };
 
-exports.issue_view_get = (req, res, next) => {
-    res.send('NOT IMPLEMENTED: Issue view GET');
+exports.issue_view_get = (req, res, project, next) => {
+    Issue.find({ project: req.params.project, ...req.query }, (err, issues) => {
+        if (err) {
+            res.send(err);
+        }
+        res.json(issues);
+    });
 };
 
 exports.issue_update_put = (req, res, next) => {
