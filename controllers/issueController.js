@@ -38,7 +38,7 @@ exports.issue_create_post = (req, res, project, next) => {
                 status = 400;
             }
 
-            res.status(status).json({ error: error });
+            res.json({ error: 'required field(s) missing' });
         }
         res.status(201).json(issue);
     });
