@@ -19,7 +19,7 @@ exports.issue_create_post = (req, res, project, next) => {
                 err.errors.created_by.kind === 'required' ?
                 'required field(s) missing' :
                 err;
-            res.status(500).json({ error });
+            res.status(500).json({ error: error });
         }
         res.status(201).json(issue);
     });
