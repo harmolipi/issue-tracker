@@ -73,6 +73,7 @@ exports.issue_update_put = (req, res, next) => {
             res.status(400).json({ error: 'could not update', _id: query._id });
             return;
         }
+        issue.updated_on = new Date();
         res.json({ result: 'successfully updated', _id: issue._id });
         return;
     });
