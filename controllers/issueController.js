@@ -83,16 +83,16 @@ exports.issue_update_put = (req, res, next) => {
 
 exports.issue_delete = (req, res, next) => {
     if (!req.body._id) {
-        res.status(400).json({ error: 'missing _id' });
+        res.json({ error: 'missing _id' });
         return;
     }
 
     Issue.findByIdAndRemove(req.body._id, (err, issue) => {
-        if (err) {
+        if (err || !issue) {
             res.json({ error: 'could not delete', _id: req.body._id });
             return;
         }
-        res.json({ result: 'successfully deleted', _id: issue.id });
+        res.json({ result: 'successfully deleted', _id: issue._id });
         return;
     });
 };
