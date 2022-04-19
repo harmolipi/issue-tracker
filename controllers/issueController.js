@@ -52,14 +52,7 @@ exports.issue_view_get = (req, res, project, next) => {
 };
 
 exports.issue_update_put = (req, res, next) => {
-    // const query = {...req.body };
     const { _id, ...update } = req.body;
-
-    // Object.keys(update).forEach((attribute) => {
-    //     if (update[attribute] === '') {
-    //         delete update[attribute];
-    //     }
-    // });
 
     if (!_id) {
         res.json({ error: 'missing _id' });
@@ -74,13 +67,16 @@ exports.issue_update_put = (req, res, next) => {
         'open',
         'status_text',
     ];
+
     let containsFields = 0;
+
     fields.forEach((field) => {
         if (update[field] !== undefined) {
             containsFields = 1;
             return;
         }
     });
+
     if (containsFields === 0) {
         res.json({ error: 'no update field(s) sent', _id });
         return;
@@ -89,9 +85,6 @@ exports.issue_update_put = (req, res, next) => {
     Issue.findByIdAndUpdate(
         _id, {...update, updated_on: new Date() }, { new: true },
         (err, issue) => {
-            // if (Object.keys(query).length === 1) {
-            // res.json({ error: 'no update field(s) sent', _id: query._id });
-            // return;
             if (err || !issue) {
                 res.json({ error: 'could not update', _id: _id });
                 return;
